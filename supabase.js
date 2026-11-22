@@ -123,7 +123,7 @@ async function apiAddAccount(account) {
       return { success: true, data };
     } catch (err) {
       console.error("Error inserting to Supabase:", err);
-      // fallback to local
+      return { success: false, localOnly: true, error: err.message || String(err) };
     }
   }
 
@@ -144,6 +144,7 @@ async function apiUpdateStatus(code, newStatus) {
       return { success: true };
     } catch (err) {
       console.error("Error updating status in Supabase:", err);
+      return { success: false, localOnly: true, error: err.message || String(err) };
     }
   }
   return { success: true, localOnly: true };
@@ -162,6 +163,7 @@ async function apiDeleteAccount(code) {
       return { success: true };
     } catch (err) {
       console.error("Error deleting from Supabase:", err);
+      return { success: false, localOnly: true, error: err.message || String(err) };
     }
   }
   return { success: true, localOnly: true };

@@ -53,7 +53,7 @@ async function apiGetAccounts() {
         .select("*")
         .order("created_at", { ascending: false });
 
-      if (!error && data && data.length > 0) {
+      if (!error && data) {
         // Map database columns to app schema
         return data.map(item => ({
           id: item.id,
@@ -64,7 +64,7 @@ async function apiGetAccounts() {
           price: item.price,
           originalPrice: item.original_price,
           image: item.image,
-          heroes: { bk: item.bk, aq: item.aq, gw: item.gw, rc: item.rc },
+          heroes: { bk: item.bk, aq: item.aq, gw: item.gw, rc: item.rc, mp: item.mp || 0, dd: item.dd || 0 },
           gems: item.gems,
           cwlMedals: item.cwl_medals,
           changeName: item.change_name,
@@ -106,6 +106,8 @@ async function apiAddAccount(account) {
         aq: account.heroes.aq,
         gw: account.heroes.gw,
         rc: account.heroes.rc,
+        mp: account.heroes.mp || 0,
+        dd: account.heroes.dd || 0,
         gems: account.gems,
         cwl_medals: account.cwlMedals,
         change_name: account.changeName,
@@ -163,6 +165,23 @@ async function apiDeleteAccount(code) {
     }
   }
   return { success: true, localOnly: true };
+}
+
+// 5. Upload gambar ke Supabase Storage (bucket publik "stok-images")
+async function apiUploadImage(blob, fileName) {
+  if (!isSupabaseActive()) {
+    throw new Error("Supabase belum terhubung.");
+  }
+  const safeName = String(fileName).toLowerCase().replace(/[^a-z0-9.\-_]/g, "-");
+  const path = `${Date.now()}-${safeName}`;
+
+  const { error } = await supabaseClient.storage
+    .from("stok-images")
+    .upload(path, blob, { contentType: blob.type || "image/jpeg", upsert: false });
+  if (error) throw error;
+
+  const { data } = supabaseClient.storage.from("stok-images").getPublicUrl(path);
+  return data.publicUrl;
 }
 
 // -------------------------------------------------------------

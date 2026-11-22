@@ -28,6 +28,11 @@ create table if not exists public.accounts (
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
+-- Tambahan: kolom Minion Prince & Dragon Duke
+alter table public.accounts add column if not exists mp integer default 0;
+alter table public.accounts add column if not exists dd integer default 0;
+
+
 -- 2. Aktifkan Row Level Security (RLS)
 alter table public.accounts enable row level security;
 
@@ -54,12 +59,3 @@ create policy "Authenticated users can delete"
   on public.accounts for delete
   using (auth.role() = 'authenticated');
 
--- 4. Masukkan Data Stok Awal (Default Initial Stock)
-insert into public.accounts (code, title, th, status, price, original_price, image, bk, aq, gw, rc, gems, cwl_medals, change_name, scid_status, trophies, equipment, pets, description)
-values
-  ('#COC-1701', 'TH 17 Ultra Sultan - Fire & Nature Theme', 17, 'ready', 1750000, 2200000, 'assets/images/th17-elite.jpg', 95, 95, 70, 45, '8.740', '1.250', 'Gratis (Free)', 'Clean Email (Siap Pindah)', '3.450 (Titan)', 'Giant Gauntlet Max, Spiky Ball Lv.27', 'L.A.S.S.I Max, Diggy Max, Phoenix Max', 'Akun Sultan TH 17 siap tempur Clan War League & Legends League!'),
-  ('#COC-1602', 'TH 16 Max Defense & Hero - Legend League Ready', 16, 'ready', 1250000, 1600000, 'assets/images/th16-max.jpg', 90, 90, 65, 40, '4.520', '850', '500 Gems', 'Clean Email (Supercell ID Aman)', '5.678 (Legends)', 'Giant Gauntlet Lv.24, Frozen Arrow Lv.25', 'Unicorn Max, Diggy Max, Frosty Lv.8', 'Base TH 16 full max pertahanan! Tembus Legends League dengan 5.600+ Trophy.'),
-  ('#COC-1503', 'TH 15 Semi Max - Crystalline Magic Fortress', 15, 'ready', 750000, 950000, 'assets/images/th15-semi.jpg', 68, 72, 54, 25, '1.245', '540', 'Gratis (Free)', 'Supercell ID Clean', '2.257 (Crystal I)', 'Giant Gauntlet Lv.18, Rage Vial Max', 'L.A.S.S.I Lv.8, Electro Owl Lv.7', 'Akun TH 15 tema sihir kristal biru! Spell Tower & Monolith aktif.'),
-  ('#COC-1404', 'TH 14 Jungle Beast - Battle Pets Komplit', 14, 'ready', 490000, 650000, 'assets/images/th14-jungle.jpg', 70, 75, 50, 25, '985', '420', 'Gratis (Free)', 'Clean Email Aman 100%', '2.315 (Crystal I)', 'Earthquake Boots Lv.15, Frozen Arrow Lv.18', 'Mighty Yak Lv.8, Unicorn Lv.9', 'Akun Town Hall 14 tema suku kuno & hutan rimba! Semua pet tempur sudah terbuka.'),
-  ('#COC-1305', 'TH 13 Frozen Ice Citadel - Siap Tempur CWL', 13, 'sold', 350000, 480000, 'assets/images/th13-ice.jpg', 65, 65, 40, 15, '1.540', '310', '500 Gems', 'Terjual ke Buyer Jakarta', '2.800 (Master III)', 'Standard Equipment Max', 'Belum terbuka (TH14+)', '[TERJUAL] Akun TH 13 max hero level 65/65/40/15.')
-on conflict (code) do nothing;

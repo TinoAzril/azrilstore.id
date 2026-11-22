@@ -149,31 +149,8 @@
       <h2 style="color: #fff; font-size: 1.75rem; margin-bottom: 0.5rem;">Masuk ke Panel Admin</h2>
       <p style="font-size: 0.9rem; color: #94a3b8; margin-bottom: 2rem;">Hanya pemilik toko yang memiliki akses untuk mengelola stok akun.</p>
 
-      <!-- Tab Login: PIN Cepat vs Akun Supabase -->
-      <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 0.5rem;">
-        <button id="btnTabPin" class="admin-tab active" style="flex: 1; justify-content: center;" onclick="switchAuthTab('pin')">
-          🔑 PIN Admin
-        </button>
-        <button id="btnTabSupabase" class="admin-tab" style="flex: 1; justify-content: center;" onclick="switchAuthTab('supabase')">
-          ⚡ Supabase Cloud
-        </button>
-      </div>
-
-      <!-- Form 1: Master PIN (Default: admin123) -->
-      <form id="formPinLogin" onsubmit="handlePinLogin(event)">
-        <div class="input-group" style="text-align: left;">
-          <label class="input-label" for="adminPinInput">Masukkan PIN Admin</label>
-          <input type="password" class="input-text" id="adminPinInput" placeholder="Default PIN: admin123" required />
-          <div class="input-helper">PIN standar awal: <strong>admin123</strong> (dapat diubah di dashboard)</div>
-        </div>
-
-        <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1.5rem;">
-          Masuk ke Dashboard Admin
-        </button>
-      </form>
-
-      <!-- Form 2: Supabase Email/Password Login -->
-      <form id="formSupabaseLogin" style="display: none;" onsubmit="handleSupabaseLogin(event)">
+      <!-- Login Admin: Supabase Auth (email & password) -->
+      <form id="formSupabaseLogin" onsubmit="handleSupabaseLogin(event)">
         <div class="input-group" style="text-align: left;">
           <label class="input-label" for="sbEmailInput">Email Admin Supabase</label>
           <input type="email" class="input-text" id="sbEmailInput" placeholder="admin@tokomu.com" required />
@@ -184,9 +161,13 @@
         </div>
 
         <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1.5rem;">
-          Login dengan Supabase Auth
+          Masuk ke Dashboard Admin
         </button>
       </form>
+
+      <div id="authNotice" style="display: none; margin-top: 1rem; font-size: 0.85rem; color: #fbbf24; text-align: left;">
+        Supabase belum terhubung. Isi URL dan Anon Key di file supabase.js (bagian SUPABASE_CONFIG), lalu muat ulang halaman ini.
+      </div>
     </div>
   </main>
 
@@ -226,7 +207,7 @@
           🗄️ Koneksi Supabase (Database Cloud)
         </button>
         <button class="admin-tab" data-pane="tabPaneSettings" onclick="switchDashPane('tabPaneSettings')">
-          ⚙️ Pengaturan Toko & PIN
+          ⚙️ Pengaturan Toko
         </button>
       </div>
 
@@ -309,20 +290,28 @@
             <label class="input-label">Level Hero (Pahlawan)</label>
             <div class="form-grid-4">
               <div>
-                <input type="number" class="input-text" id="dAddBK" placeholder="King (BK)" min="0" max="95" required />
+                <input type="number" class="input-text" id="dAddBK" placeholder="King (BK)" min="0" max="120" required />
                 <div class="input-helper" style="text-align: center;">Barbarian King</div>
               </div>
               <div>
-                <input type="number" class="input-text" id="dAddAQ" placeholder="Queen (AQ)" min="0" max="95" required />
+                <input type="number" class="input-text" id="dAddAQ" placeholder="Queen (AQ)" min="0" max="120" required />
                 <div class="input-helper" style="text-align: center;">Archer Queen</div>
               </div>
               <div>
-                <input type="number" class="input-text" id="dAddGW" placeholder="Warden (GW)" min="0" max="70" required />
+                <input type="number" class="input-text" id="dAddGW" placeholder="Warden (GW)" min="0" max="95" required />
                 <div class="input-helper" style="text-align: center;">Grand Warden</div>
               </div>
               <div>
-                <input type="number" class="input-text" id="dAddRC" placeholder="Champ (RC)" min="0" max="45" required />
+                <input type="number" class="input-text" id="dAddRC" placeholder="Champ (RC)" min="0" max="70" required />
                 <div class="input-helper" style="text-align: center;">Royal Champion</div>
+              </div>
+              <div>
+                <input type="number" class="input-text" id="dAddMP" placeholder="Minion Prince (MP)" min="0" max="120" />
+                <div class="input-helper" style="text-align: center;">Minion Prince (TH 14+, kosongkan jika tidak ada)</div>
+              </div>
+              <div>
+                <input type="number" class="input-text" id="dAddDD" placeholder="Dragon Duke (DD)" min="0" max="120" />
+                <div class="input-helper" style="text-align: center;">Dragon Duke (TH 18, kosongkan jika tidak ada)</div>
               </div>
             </div>
           </div>
@@ -434,23 +423,16 @@
         </div>
       </div>
 
-      <!-- PANE 4: PENGATURAN TOKO & PIN -->
+      <!-- PANE 4: PENGATURAN TOKO -->
       <div class="admin-content-pane" id="tabPaneSettings">
         <div style="max-width: 550px; margin: 0 auto; padding: 1rem 0;">
-          <h3 style="color: #fff; font-size: 1.2rem; margin-bottom: 1rem;">Pengaturan WhatsApp & Keamanan Admin</h3>
+          <h3 style="color: #fff; font-size: 1.2rem; margin-bottom: 1rem;">Pengaturan WhatsApp Toko</h3>
 
           <!-- WhatsApp Phone -->
           <div class="input-group">
             <label class="input-label" for="dashWaPhoneInput">Nomor WhatsApp Admin Toko</label>
             <input type="text" class="input-text" id="dashWaPhoneInput" placeholder="Contoh: 081234567890" />
             <div class="input-helper">Nomor yang menerima pesan otomatis saat pembeli klik "Beli via WA".</div>
-          </div>
-
-          <!-- Custom Master PIN -->
-          <div class="input-group" style="margin-top: 1.5rem;">
-            <label class="input-label" for="dashNewPinInput">Ubah PIN Masuk Admin</label>
-            <input type="password" class="input-text" id="dashNewPinInput" placeholder="Masukkan PIN baru Anda" />
-            <div class="input-helper">Kosongkan jika tidak ingin mengubah PIN admin saat ini.</div>
           </div>
 
           <button class="btn btn-primary btn-block" style="margin-top: 1.5rem;" onclick="handleSaveDashSettings()">
@@ -475,16 +457,6 @@
 
   <script>
     // Admin Portal Specific Controller Logic
-    let currentAuthMode = "pin";
-
-    function switchAuthTab(mode) {
-      currentAuthMode = mode;
-      document.getElementById("btnTabPin").classList.toggle("active", mode === "pin");
-      document.getElementById("btnTabSupabase").classList.toggle("active", mode === "supabase");
-      document.getElementById("formPinLogin").style.display = mode === "pin" ? "block" : "none";
-      document.getElementById("formSupabaseLogin").style.display = mode === "supabase" ? "block" : "none";
-    }
-
     function switchDashPane(paneId) {
       document.querySelectorAll("#dashboardScreen .admin-tab").forEach(tab => {
         tab.classList.toggle("active", tab.dataset.pane === paneId);
@@ -495,29 +467,27 @@
     }
 
     // Check Login State
-    function checkAdminAuth() {
-      const isAuth = sessionStorage.getItem("pojox_admin_session") === "true";
+    // Login dianggap sah HANYA jika ada sesi Supabase Auth yang asli (bukan sekadar penanda di browser).
+    async function checkAdminAuth() {
+      const online = isSupabaseActive();
+      let isAuth = false;
+
+      if (online) {
+        try {
+          const session = await apiGetAdminSession();
+          isAuth = !!session;
+        } catch (err) {
+          console.warn("Gagal membaca sesi admin:", err);
+        }
+      }
+
       document.getElementById("authScreen").style.display = isAuth ? "none" : "block";
       document.getElementById("dashboardScreen").style.display = isAuth ? "block" : "none";
       document.getElementById("btnLogout").style.display = isAuth ? "inline-flex" : "none";
+      document.getElementById("authNotice").style.display = online ? "none" : "block";
 
       if (isAuth) {
         initDashboardView();
-      }
-    }
-
-    // PIN Login
-    function handlePinLogin(e) {
-      e.preventDefault();
-      const inputPin = document.getElementById("adminPinInput").value.trim();
-      const savedPin = localStorage.getItem("pojox_admin_pin") || "admin123";
-
-      if (inputPin === savedPin) {
-        sessionStorage.setItem("pojox_admin_session", "true");
-        showToast("Login berhasil! Selamat datang di Panel Admin.");
-        checkAdminAuth();
-      } else {
-        alert("PIN salah! Default PIN adalah: admin123");
       }
     }
 
@@ -525,23 +495,21 @@
     async function handleSupabaseLogin(e) {
       e.preventDefault();
       const email = document.getElementById("sbEmailInput").value.trim();
-      const pass = document.getElementById("sbPasswordInput").value.trim();
+      const pass = document.getElementById("sbPasswordInput").value;
 
       try {
         await apiAdminLogin(email, pass);
-        sessionStorage.setItem("pojox_admin_session", "true");
-        showToast("Login Supabase berhasil!");
-        checkAdminAuth();
+        showToast("Login berhasil! Selamat datang di Panel Admin.");
+        await checkAdminAuth();
       } catch (err) {
-        alert("Gagal login Supabase: " + err.message);
+        alert("Gagal login: " + err.message);
       }
     }
 
-    function adminLogout() {
-      sessionStorage.removeItem("pojox_admin_session");
-      apiAdminLogout();
+    async function adminLogout() {
+      await apiAdminLogout();
       showToast("Anda telah keluar dari Panel Admin.");
-      checkAdminAuth();
+      await checkAdminAuth();
     }
 
     // Dashboard Initialization
@@ -634,9 +602,13 @@
       const account = ACCOUNTS_DATA.find(a => a.code === code);
       if (!account) return;
       const newStatus = account.status === "ready" ? "sold" : "ready";
-      account.status = newStatus;
 
-      await apiUpdateStatus(code, newStatus);
+      const result = await apiUpdateStatus(code, newStatus);
+      if (!result || result.localOnly) {
+        alert("Gagal mengubah status di database Supabase. Coba login ulang lalu ulangi.");
+        return;
+      }
+      account.status = newStatus;
       saveAccountsToStorage();
       renderDashboardStockList();
       updateDashboardStats();
@@ -646,7 +618,11 @@
     async function handleDashDeleteStock(code) {
       if (!confirm(`Hapus akun ${code} secara permanen?`)) return;
 
-      await apiDeleteAccount(code);
+      const result = await apiDeleteAccount(code);
+      if (!result || result.localOnly) {
+        alert("Gagal menghapus akun di database Supabase. Coba login ulang lalu ulangi.");
+        return;
+      }
       ACCOUNTS_DATA = ACCOUNTS_DATA.filter(a => a.code !== code);
       saveAccountsToStorage();
       renderDashboardStockList();
@@ -694,6 +670,8 @@
       const aq = parseInt(document.getElementById("dAddAQ").value) || 0;
       const gw = parseInt(document.getElementById("dAddGW").value) || 0;
       const rc = parseInt(document.getElementById("dAddRC").value) || 0;
+      const mp = parseInt(document.getElementById("dAddMP").value) || 0;
+      const dd = parseInt(document.getElementById("dAddDD").value) || 0;
 
       const gems = document.getElementById("dAddGems").value.trim() || "1.000";
       const trophies = document.getElementById("dAddTrophies").value.trim() || "3.000";
@@ -716,7 +694,7 @@
         price,
         originalPrice,
         image,
-        heroes: { bk, aq, gw, rc },
+        heroes: { bk, aq, gw, rc, mp, dd },
         gems,
         cwlMedals: "500",
         changeName,
@@ -727,7 +705,15 @@
         description
       };
 
-      await apiAddAccount(newAccount);
+      if (image.startsWith("data:") && !confirm("Foto yang di-upload langsung akan disimpan sebagai teks sangat panjang di database dan bisa membuat situs lambat. Disarankan taruh foto di folder assets/images lalu pakai path-nya. Tetap lanjut?")) {
+        return;
+      }
+
+      const result = await apiAddAccount(newAccount);
+      if (!result || result.localOnly) {
+        alert("Akun GAGAL disimpan ke database Supabase, jadi tidak diterbitkan. Coba login ulang lalu ulangi.");
+        return;
+      }
       ACCOUNTS_DATA.unshift(newAccount);
       saveAccountsToStorage();
 
@@ -761,15 +747,11 @@
 
     function handleSaveDashSettings() {
       const wa = document.getElementById("dashWaPhoneInput").value.trim();
-      const newPin = document.getElementById("dashNewPinInput").value.trim();
 
       if (wa) {
         setAdminPhone(wa);
       }
-      if (newPin) {
-        localStorage.setItem("pojox_admin_pin", newPin);
-      }
-      showToast("Pengaturan toko & PIN admin berhasil disimpan!");
+      showToast("Pengaturan toko berhasil disimpan!");
     }
 
     // Auto initialize on load

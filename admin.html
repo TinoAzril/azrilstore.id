@@ -363,6 +363,10 @@
               <span style="font-size: 0.8rem; color: #94a3b8;">Atau upload screenshot sendiri:</span>
               <input type="file" id="dCustomFileInput" accept="image/*" class="input-text" style="padding: 0.45rem; font-size: 0.85rem; width: auto;" onchange="handleDashCustomFile(event)" />
             </div>
+            <div style="margin-top: 0.75rem;">
+              <input type="text" class="input-text" id="dImgUrl" placeholder="Atau tempel link/path gambar, contoh: assets/images/th18-baru.jpg" oninput="handleDashImgUrl(this.value)" />
+              <div class="input-helper">Foto yang di-upload otomatis dikecilkan (maks 1280px) lalu disimpan di Supabase Storage. Format: JPG, PNG, atau WEBP.</div>
+            </div>
             <input type="hidden" id="dSelectedImg" value="assets/images/th16-max.jpg" />
           </div>
 
@@ -605,7 +609,7 @@
 
       const result = await apiUpdateStatus(code, newStatus);
       if (!result || result.localOnly) {
-        alert("Gagal mengubah status di database Supabase. Coba login ulang lalu ulangi.");
+        alert("Gagal mengubah status di database Supabase.\n\nDetail: " + ((result && result.error) || "tidak diketahui"));
         return;
       }
       account.status = newStatus;
@@ -620,7 +624,7 @@
 
       const result = await apiDeleteAccount(code);
       if (!result || result.localOnly) {
-        alert("Gagal menghapus akun di database Supabase. Coba login ulang lalu ulangi.");
+        alert("Gagal menghapus akun di database Supabase.\n\nDetail: " + ((result && result.error) || "tidak diketahui"));
         return;
       }
       ACCOUNTS_DATA = ACCOUNTS_DATA.filter(a => a.code !== code);
@@ -643,18 +647,71 @@
       document.querySelectorAll("#dPresetGrid .preset-thumb").forEach(t => t.classList.remove("selected"));
       el.classList.add("selected");
       document.getElementById("dSelectedImg").value = el.dataset.img;
+      const urlBox = document.getElementById("dImgUrl");
+      if (urlBox) urlBox.value = "";
     }
 
-    function handleDashCustomFile(e) {
-      const file = e.target.files[0];
+    // Kecilkan gambar di browser sebelum diunggah (hemat kuota & cepat dimuat)
+    function compressImage(file, maxSize, quality) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        const objUrl = URL.createObjectURL(file);
+        img.onload = () => {
+          const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
+          const w = Math.round(img.width * scale);
+          const h = Math.round(img.height * scale);
+          const canvas = document.createElement("canvas");
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext("2d");
+          ctx.fillStyle = "#ffffff";
+          ctx.fillRect(0, 0, w, h);
+          ctx.drawImage(img, 0, 0, w, h);
+          canvas.toBlob(blob => {
+            URL.revokeObjectURL(objUrl);
+            blob ? resolve(blob) : reject(new Error("Gagal memproses gambar."));
+          }, "image/jpeg", quality);
+        };
+        img.onerror = () => {
+          URL.revokeObjectURL(objUrl);
+          reject(new Error("File tidak bisa dibaca sebagai gambar. Gunakan JPG, PNG, atau WEBP (format HEIC dari iPhone belum didukung)."));
+        };
+        img.src = objUrl;
+      });
+    }
+
+    async function handleDashCustomFile(e) {
+      const input = e.target;
+      const file = input.files[0];
       if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        document.getElementById("dSelectedImg").value = evt.target.result;
+
+      if (!file.type.startsWith("image/")) {
+        alert("File harus berupa gambar (JPG, PNG, atau WEBP).");
+        input.value = "";
+        return;
+      }
+
+      showToast("Mengompres dan mengunggah foto...");
+      try {
+        const blob = await compressImage(file, 1280, 0.82);
+        const baseName = file.name.replace(/\.[^.]+$/, "") || "stok";
+        const url = await apiUploadImage(blob, baseName + ".jpg");
+        document.getElementById("dSelectedImg").value = url;
+        document.getElementById("dImgUrl").value = url;
         document.querySelectorAll("#dPresetGrid .preset-thumb").forEach(t => t.classList.remove("selected"));
-        showToast("Screenshot berhasil dimuat!");
-      };
-      reader.readAsDataURL(file);
+        showToast("Foto berhasil diunggah!");
+      } catch (err) {
+        console.error("Gagal upload gambar:", err);
+        alert("Gagal mengunggah foto: " + (err.message || err) + "\n\nPastikan SQL Storage (bucket stok-images) sudah dijalankan di Supabase dan kamu sedang login.");
+        input.value = "";
+      }
+    }
+
+    function handleDashImgUrl(value) {
+      const v = value.trim();
+      if (!v) return;
+      document.getElementById("dSelectedImg").value = v;
+      document.querySelectorAll("#dPresetGrid .preset-thumb").forEach(t => t.classList.remove("selected"));
     }
 
     async function handleDashAddStock(e) {
@@ -711,7 +768,7 @@
 
       const result = await apiAddAccount(newAccount);
       if (!result || result.localOnly) {
-        alert("Akun GAGAL disimpan ke database Supabase, jadi tidak diterbitkan. Coba login ulang lalu ulangi.");
+        alert("Akun GAGAL disimpan ke database Supabase, jadi tidak diterbitkan.\n\nDetail: " + ((result && result.error) || "tidak diketahui"));
         return;
       }
       ACCOUNTS_DATA.unshift(newAccount);

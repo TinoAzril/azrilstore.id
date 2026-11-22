@@ -6,8 +6,8 @@
 // Konfigurasi Supabase
 // Anda dapat memasukkan URL dan Anon Key di sini atau menyimpannya lewat Panel Admin di browser.
 const SUPABASE_CONFIG = {
-  url: "https://toeteaojgpgewnqpoldk.supabase.co", // Contoh: "https://xyzcompany.supabase.co"
-  anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRvZXRlYW9qZ3BnZXducXBvbGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUxOTE4MjUsImV4cCI6MjExMDc2NzgyNX0.5JVza6MX34BXWasg-TF_09uVTEwQWaIV--sBoZTBceo", // Anon public key Supabase
+  url: "https://toeteaojgpgewnqpoldk.supabase.co",
+  anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRvZXRlYW9qZ3BnZXducXBvbGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUxOTE4MjUsImV4cCI6MjExMDc2NzgyNX0.5JVza6MX34BXWasg-TF_09uVTEwQWaIV--sBoZTBceo",
 };
 
 let supabaseClient = null;

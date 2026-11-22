@@ -5,7 +5,7 @@
 
 // Global Configuration
 const CONFIG = {
-  defaultPhone: "6285602444823", // Ganti dengan nomor WhatsApp Admin Anda
+  defaultPhone: "6285189096899", // Ganti dengan nomor WhatsApp Admin Anda
   storeName: "Azril Store",
 };
 
@@ -26,14 +26,127 @@ function setAdminPhone(phone) {
 
 // Database Akun Clash of Clans (Data Bawaan)
 const DEFAULT_ACCOUNTS_DATA = [
-
+  {
+    id: 0,
+    code: "#COC-1801",
+    title: "TH 18 Mega Sultan - Dragon Duke & Minion Prince",
+    th: 18,
+    status: "ready",
+    price: 2500000,
+    originalPrice: 3200000,
+    image: "assets/images/th17-elite.jpg",
+    heroes: { bk: 110, aq: 110, gw: 85, rc: 55, mp: 95, dd: 25 },
+    gems: "12.500",
+    cwlMedals: "2.100",
+    changeName: "Gratis (Free)",
+    scidStatus: "Clean Email (Siap Pindah)",
+    trophies: "6.200 (Legends League)",
+    equipment: "Giant Gauntlet Max, Spiky Ball Max, Fireball Max, Frozen Arrow Max",
+    pets: "L.A.S.S.I Max, Electro Owl Max, Diggy Max, Phoenix Max, Poison Lizard Max",
+    description: "Akun TH 18 Sultan! Semua hero max level termasuk Minion Prince Lv.95 & Dragon Duke Lv.25 yang merupakan hero terbaru CoC. Pertahanan dan tembok super kokoh, skin hero legendaris komplit, equipment epic langka sudah level tinggi. Langka & Eksklusif!"
+  },
+  {
+    id: 1,
+    code: "#COC-1701",
+    title: "TH 17 Ultra Sultan - Fire & Nature Theme",
+    th: 17,
+    status: "ready",
+    price: 1750000,
+    originalPrice: 2200000,
+    image: "assets/images/th17-elite.jpg",
+    heroes: { bk: 95, aq: 95, gw: 70, rc: 45, mp: 0, dd: 0 },
+    gems: "8.740",
+    cwlMedals: "1.250",
+    changeName: "Gratis (Free)",
+    scidStatus: "Clean Email (Siap Pindah)",
+    trophies: "3.450 (Master/Titan)",
+    equipment: "Giant Gauntlet Max, Spiky Ball Lv.27, Fireball Max",
+    pets: "L.A.S.S.I Max, Electro Owl Max, Diggy Max, Phoenix Max",
+    description: "Akun Sultan TH 17 siap tempur Clan War League & Legends League! Pertahanan dan tembok super kokoh, skin hero legendaris komplit, equipment epic langka sudah level tinggi."
+  },
+  {
+    id: 2,
+    code: "#COC-1602",
+    title: "TH 16 Max Defense & Hero - Legend League Ready",
+    th: 16,
+    status: "ready",
+    price: 1250000,
+    originalPrice: 1600000,
+    image: "assets/images/th16-max.jpg",
+    heroes: { bk: 90, aq: 90, gw: 65, rc: 40, mp: 0, dd: 0 },
+    gems: "4.520",
+    cwlMedals: "850",
+    changeName: "500 Gems",
+    scidStatus: "Clean Email (Supercell ID Aman)",
+    trophies: "5.678 (Legends League)",
+    equipment: "Giant Gauntlet Lv.24, Frozen Arrow Lv.25, Healing Tome Max",
+    pets: "Unicorn Max, Diggy Max, Frosty Lv.8",
+    description: "Base TH 16 full max pertahanan! Tembus Legends League dengan 5.600+ Trophy. Koleksi Magic Items melimpah di inventory. Tinggal ganti email pribadi langsung push rank."
+  },
+  {
+    id: 3,
+    code: "#COC-1503",
+    title: "TH 15 Semi Max - Crystalline Magic Fortress",
+    th: 15,
+    status: "ready",
+    price: 750000,
+    originalPrice: 950000,
+    image: "assets/images/th15-semi.jpg",
+    heroes: { bk: 68, aq: 72, gw: 54, rc: 25, mp: 0, dd: 0 },
+    gems: "1.245",
+    cwlMedals: "540",
+    changeName: "Gratis (Free)",
+    scidStatus: "Supercell ID Clean",
+    trophies: "2.257 (Crystal I)",
+    equipment: "Giant Gauntlet Lv.18, Rage Vial Max, Invisibility Max",
+    pets: "L.A.S.S.I Lv.8, Electro Owl Lv.7",
+    description: "Akun TH 15 tema sihir kristal biru! Spell Tower & Monolith aktif. Base rapi dan sangat kuat menahan serangan elektro naga. Harga terjangkau untuk spek tinggi."
+  },
+  {
+    id: 4,
+    code: "#COC-1404",
+    title: "TH 14 Jungle Beast - Battle Pets Komplit",
+    th: 14,
+    status: "ready",
+    price: 490000,
+    originalPrice: 650000,
+    image: "assets/images/th14-jungle.jpg",
+    heroes: { bk: 70, aq: 75, gw: 50, rc: 25, mp: 0, dd: 0 },
+    gems: "985",
+    cwlMedals: "420",
+    changeName: "Gratis (Free)",
+    scidStatus: "Clean Email Aman 100%",
+    trophies: "2.315 (Crystal I)",
+    equipment: "Earthquake Boots Lv.15, Frozen Arrow Lv.18",
+    pets: "L.A.S.S.I Lv.10, Mighty Yak Lv.8, Unicorn Lv.9",
+    description: "Akun Town Hall 14 tema suku kuno & hutan rimba! Semua pet tempur sudah terbuka. Pasukan darat dan udara level max untuk perang clan."
+  },
+  {
+    id: 5,
+    code: "#COC-1305",
+    title: "TH 13 Frozen Ice Citadel - Siap Tempur CWL",
+    th: 13,
+    status: "sold",
+    price: 350000,
+    originalPrice: 480000,
+    image: "assets/images/th13-ice.jpg",
+    heroes: { bk: 65, aq: 65, gw: 40, rc: 15, mp: 0, dd: 0 },
+    gems: "1.540",
+    cwlMedals: "310",
+    changeName: "500 Gems",
+    scidStatus: "Terjual ke Buyer Jakarta",
+    trophies: "2.800 (Master III)",
+    equipment: "Standard Equipment Max Lv",
+    pets: "Belum kebuka (Fitur TH14+)",
+    description: "[TERJUAL] Akun TH 13 max hero level 65/65/40/15. Pertahanan es kokoh dengan Catapult aktif."
+  }
 ];
 
 // Persistent LocalStorage Loader
 // NAIKKAN angka versi ini (misal "2" -> "3") SETIAP KALI kamu mengubah DEFAULT_ACCOUNTS_DATA
 // (ganti foto, harga, hapus/tambah akun). Dengan begitu data lama di browser dibuang
 // dan perubahan terbaru dari kode langsung tampil.
-const STOCK_VERSION = "2";
+const STOCK_VERSION = "3";
 
 function getStoredAccounts() {
   // Versi berubah -> buang catatan lama di browser, pakai data terbaru dari kode
